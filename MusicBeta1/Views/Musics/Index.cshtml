@@ -1,0 +1,104 @@
+﻿
+@model PagedList.IPagedList<MusicBeta1.Models.Music>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Music Beta</h2>
+
+<p>
+    @if (User.IsInRole("Administrator"))
+    {
+        <p>@Html.ActionLink("Create New Upload", "Create")</p>
+    }
+        @using (Html.BeginForm())
+        {
+<p>
+            Genre: @Html.DropDownList("musicGenre", "All")
+            Title: @Html.TextBox("SearchString, ViewBag.CurrentFilter as string") <br />
+            <input type="submit" value="Filter" />
+        </p>
+    }
+</p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm, currentFilter = ViewBag.CurrentFilter })
+                @ViewBag.SortDescTitle
+                @ViewBag.SortAscTitle
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Artist)*@
+                Artist
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Genre)*@
+                Genre
+            </th>
+            <th>
+                @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+                @ViewBag.SortDescDate
+                @ViewBag.SortAscDate
+            </th>
+            <th>
+                Play
+            </th>
+            <th>
+               Download
+            </th>
+            
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Artist)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UploadDate)
+            </td>
+           
+            <td>
+                <audio controls>
+                    <source src="@Url.Content(item.MusicPath)" type="audio/mpeg" />
+
+                </audio>
+            </td>
+            <td>
+                @*<img src="~/App_Data/Files/fire-1345870.png" class="img-responsive" alt="Cinque Terre">
+                
+                <img src="~/Content/files/fire-1345870.png" width="250" height="250" class="text-center" />*@
+
+                
+                
+                
+                <a href="@Url.Content(item.MusicPath)" download="@Url.Content(item.OriginalFileName)">Download</a>
+            </td>
+            <td>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <p>@Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })</p>
+                }
+            </td>
+        </tr>
+        }
+
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

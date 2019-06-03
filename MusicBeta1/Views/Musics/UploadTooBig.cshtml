@@ -1,0 +1,14 @@
+﻿@model MusicBeta1.Models.UploadTooBigViewModel
+
+@{
+    ViewBag.Title = "Upload Too Large";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    You cannot upload a file that large.  The largest file that
+    can be uploaded is @Model.MaxRequestLength
+</p>
+
+<a href="javascript:history.go(-1);">Back</a>
+
